@@ -1,19 +1,18 @@
+// const PrismaClient = require('')
+
+import { PrismaClient } from '.prisma/client';
+
+const prisma = new PrismaClient();
+
 describe('Authentication', () => {
-  it('should sum two numbers', () => {
-    const x = 2;
-    const y = 4;
+  it('should sum two numbers', async () => {
+    const user = await prisma.user.create({
+      data: {
+        email: 'teste@email.com',
+        passwordHash: '123456'
+      }
+    });
 
-    const sum = x + y;
-
-    expect(sum).toBe(6);
-  });
-
-  it('should sum two numbers', () => {
-    const x = 2;
-    const y = 4;
-
-    const sum = x + y;
-
-    expect(sum).toBe(7);
+    expect(user.email).toBe('teste@email.com');
   });
 });

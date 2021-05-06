@@ -1,5 +1,10 @@
+import Dotenv from 'dotenv';
 import express from 'express';
 import routes from './routes';
+
+Dotenv.config({
+  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
+});
 
 class App {
   public express: express.Application;
