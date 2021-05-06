@@ -1,8 +1,9 @@
 import { PrismaClient } from '.prisma/client';
-import request from 'supertest';
+import bcrypt from 'bcryptjs';
 import app from '../../src/app';
 
 const prisma = new PrismaClient();
+
 afterAll(async (done) => {
   await prisma.$disconnect();
   done();
@@ -14,17 +15,18 @@ beforeEach(async () => {
 
 describe('Authentication', () => {
   it('should sum two numbers', async () => {
-    await request(app).post('/users').send({
-      email: 'teste@email.com',
-      password: '123456'
+    const user = await prisma.user.create({
+      data: {
+        email: 'teste@email.com',
+        passwordHash: '123456'
+      }
     });
 
-    const response = await request(app).post('/sessions').send({
-      email: 'teste@email.com',
-      password: '123456'
-    });
+    const hash = await bcrypt.hash('123456', 8);
 
-    expect(response.status).toBe(200);
+    const compareHash = await bcrypt.compare('123456', hash);
+
+    expect(compareHash).toBe(true);
   });
 
   app;
